@@ -67,7 +67,7 @@ unlink_socket(void)
 }
 
 /* Signal */
-static RETSIGTYPE 
+static RETSIGTYPE
 die(int sig)
 {
 	/* Well, the child died. */
@@ -304,7 +304,7 @@ control_activity(int s)
 {
 	int fd;
 	struct client *p;
- 
+
 	/* Accept the new client and link it in. */
 	fd = accept(s, NULL, NULL);
 	if (fd < 0)
@@ -347,7 +347,7 @@ client_activity(struct client *p)
 		*(p->pprev) = p->next;
 		free(p);
 		return;
-	} 
+	}
 
 	/* Push out data to the program. */
 	if (pkt.type == MSG_PUSH)
@@ -437,7 +437,7 @@ master_process(int s, char **argv, int waitattach, int statusfd)
 		printf("%s: init_pty: %s\n", progname, strerror(errno));
 		exit(1);
 	}
-	
+
 	/* Close statusfd, since we don't need it anymore. */
 	if (statusfd != -1)
 		close(statusfd);
