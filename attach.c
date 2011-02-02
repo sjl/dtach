@@ -187,7 +187,7 @@ attach_main(int noerror, int noclear)
 	tcsetattr(0, TCSADRAIN, &cur_term);
 
 	/* Clear the screen. This assumes VT100. */
-    if (!noclear)
+	if (!noclear)
 		write(1, "\33[H\33[J", 6);
 
 	/* Tell the master that we want to attach. */
