@@ -140,7 +140,7 @@ process_kbd(int s, struct packet *pkt)
 }
 
 int
-attach_main(int noerror)
+attach_main(int noerror, int noclear)
 {
 	struct packet pkt;
 	unsigned char buf[BUFSIZE];
@@ -187,7 +187,8 @@ attach_main(int noerror)
 	tcsetattr(0, TCSADRAIN, &cur_term);
 
 	/* Clear the screen. This assumes VT100. */
-	write(1, "\33[H\33[J", 6);
+    if (!noclear)
+		write(1, "\33[H\33[J", 6);
 
 	/* Tell the master that we want to attach. */
 	pkt.type = MSG_ATTACH;
@@ -259,3 +260,4 @@ attach_main(int noerror)
 	}
 	return 0;
 }
+
