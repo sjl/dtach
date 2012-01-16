@@ -140,7 +140,7 @@ process_kbd(int s, struct packet *pkt)
 }
 
 int
-attach_main(int noerror, int noclear)
+attach_main(int noerror, int passthrough)
 {
 	struct packet pkt;
 	unsigned char buf[BUFSIZE];
@@ -163,7 +163,8 @@ attach_main(int noerror, int noclear)
 	cur_term = orig_term;
 
 	/* Set a trap to restore the terminal when we die. */
-	atexit(restore_term);
+	if (!passthrough)
+		atexit(restore_term);
 
 	/* Set some signals. */
 	signal(SIGPIPE, SIG_IGN);
@@ -187,7 +188,7 @@ attach_main(int noerror, int noclear)
 	tcsetattr(0, TCSADRAIN, &cur_term);
 
 	/* Clear the screen. This assumes VT100. */
-	if (!noclear)
+	if (!passthrough)
 		write(1, "\33[H\33[J", 6);
 
 	/* Tell the master that we want to attach. */
@@ -232,7 +233,8 @@ attach_main(int noerror, int noclear)
 				exit(1);
 			}
 			/* Send the data to the terminal. */
-			write(1, buf, len);
+			if (!passthrough)
+				write(1, buf, len);
 			n--;
 		}
 		/* stdin activity */
@@ -243,7 +245,7 @@ attach_main(int noerror, int noclear)
 			pkt.len = read(0, pkt.u.buf, sizeof(pkt.u.buf));
 
 			if (pkt.len <= 0)
-				exit(1);
+				exit(0);
 			process_kbd(s, &pkt);
 			n--;
 		}
